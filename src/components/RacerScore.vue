@@ -2,7 +2,7 @@
     <div class="score-item">
         <span class="year" :style="{background: color}">{{racer.year}}</span>
         <span class="name">{{racer.name}}</span>
-        <span class="flag"> AB </span>
+        <span class="flag"> <img :src="`flags/${flag}.png`" alt=""> </span>
         <span class="country">{{racer.countryCode}}</span>
         <span class="time">{{racer.time.trimPrecision(2).pad(0, 2, ',')}}s</span>
     </div>
@@ -11,6 +11,7 @@
 <script>
     import {Color} from "../js/entities/Color";
     import {Racer} from "../js/entities/Racer";
+    import CountryCodes from "../js/CountryCodes";
 
     export default {
         name: 'RacerScore',
@@ -18,13 +19,18 @@
             color: [Color, String],
             racer: Racer
         },
+        computed: {
+            flag() {
+                return CountryCodes[this.racer.countryCode];
+            }
+        }
     }
 </script>
 
 <style scoped>
     .score-item {
         display: block;
-        width: 500px;
+        width: 600px;
         margin: .2em auto;
     }
 
@@ -53,12 +59,18 @@
     }
 
     .score-item .name {
-        width: 40%;
+        width: 45%;
     }
 
     .score-item .flag {
         width: 5%;
         text-align: center;
+        padding: 0;
+    }
+    .score-item .flag img {
+        width: auto;
+        height: 18px;
+        transform: translateY(2px);
     }
 
     .score-item .country {
@@ -68,7 +80,7 @@
     .score-item .time {
         padding-right: .6em;
 
-        width: 10%;
+        width: 8%;
         text-align: right;
 
         border-bottom-right-radius: 10px;

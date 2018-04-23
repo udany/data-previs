@@ -40,11 +40,12 @@
         },
 
         data: () => ({
-            racers: [],
+            racerPool: [],
             scores: [],
             secondsElapsed: 0,
             interval: null,
-            dotsVisible: false
+            dotsVisible: false,
+            gender: "M"
         }),
 
         methods: {
@@ -60,6 +61,8 @@
             },
 
             start() {
+                this.scores = [];
+
                 this.secondsElapsed = 0;
 
                 this.interval = setInterval(() => {
@@ -76,21 +79,32 @@
 
                 if (this.secondsElapsed >= this.maxTime) {
                     this.stop();
+                    this.addScores();
                 }
             },
 
-            addRacers(to, after, stagger = 50) {
+            addScores(after, stagger = 50) {
                 for(let racer of this.racers) {
                     let idx = this.racers.indexOf(racer);
 
                     setTimeout(() => {
-                        to.push(racer);
+                        this.scores.push(racer);
                     }, idx * stagger)
                 }
 
                 setTimeout(() => {
                     if (after) after();
                 }, (this.racers.length+1) * stagger)
+            },
+
+            kickstart() {
+                setTimeout(() => {
+                    this.dotsVisible = true;
+
+                    setTimeout(() => {
+                        this.start();
+                    }, 1000)
+                }, 50);
             }
         },
 
@@ -98,20 +112,16 @@
             maxTime() {
                 return Math.max(...this.racers.map(x => x.time));
             },
+
+            racers() {
+                return this.racerPool.filter(x => x.gender === this.gender);
+            }
         },
 
         async mounted() {
-            this.racers = await RacerParser.load();
+            this.racerPool = await RacerParser.load();
 
-
-            setTimeout(() => {
-                this.dotsVisible = true;
-
-                setTimeout(() => {
-                    this.start();
-                    this.addRacers(this.scores);
-                }, 1000)
-            }, 50)
+            this.kickstart();
         }
     }
 </script>
@@ -136,6 +146,7 @@
         position: absolute;
         left: 0;
         right: 0;
+        top: 55px;
     }
 
     .score-enter-active, .score-leave-active {

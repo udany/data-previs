@@ -18,7 +18,7 @@
             racer: Racer,
             secondsElapsed: [Number],
             totalDistance: {
-                default: 500
+                default: 820
             }
         },
 
@@ -30,7 +30,7 @@
                 return `translateY(${this.distance}px)`;
             },
             trailHeight() {
-                return `${this.distance + 5}px`;
+                return `${this.distance + 8}px`;
             }
         }
     }

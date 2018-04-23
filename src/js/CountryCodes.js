@@ -1,0 +1,17 @@
+export default {
+    USA: 'us',
+    JAM: 'jm',
+    RSA: 'za',
+    GBR: 'gb',
+    CAN: 'ca',
+    POL: 'pl',
+    NED: 'nl',
+    AUS: 'au',
+    EUA: 'de',
+    GDR: 'de',
+    URS: 'ru',
+    FRG: 'de',
+    TTO: 'tt',
+    GRE: 'gr',
+    BLR: 'by',
+}
