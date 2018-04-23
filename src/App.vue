@@ -13,6 +13,16 @@
                 <racer-score v-for="r in scores" :key="r.GetUId()" :color="getColor(r)" :racer="r" :secondsElapsed="secondsElapsed"></racer-score>
             </transition-group>
         </div>
+
+        <div class="controls">
+            <button @click="start">START</button>
+            <button @click="stop" v-if="interval">STOP</button>
+
+            <br>
+
+            <button @click="setGender('M')">MALE</button>
+            <button @click="setGender('F')">FEMALE</button>
+        </div>
     </div>
 </template>
 
@@ -22,6 +32,7 @@
     import {Color} from "./js/entities/Color";
     import {Racer} from "./js/entities/Racer";
     import {RacerParser} from "./js/RacerParser";
+    import Sorter from "./js/base/Sorter";
 
     let colors = [
         new Color([0, 0, 255, 1]),
@@ -45,7 +56,8 @@
             secondsElapsed: 0,
             interval: null,
             dotsVisible: false,
-            gender: "M"
+            gender: "M",
+            scoreboardSorter: Sorter.fromAttribute(Racer.GetAttribute('time'), 1)
         }),
 
         methods: {
@@ -60,10 +72,16 @@
                 this.secondsElapsed += by
             },
 
-            start() {
+            clear() {
+                this.stop();
+
                 this.scores = [];
 
                 this.secondsElapsed = 0;
+            },
+
+            start() {
+                this.clear();
 
                 this.interval = setInterval(() => {
                     this.intervalFn();
@@ -71,7 +89,8 @@
             },
 
             stop() {
-                clearInterval(this.interval);
+                if (this.interval) clearInterval(this.interval);
+                this.interval = null;
             },
 
             intervalFn() {
@@ -84,8 +103,10 @@
             },
 
             addScores(after, stagger = 50) {
-                for(let racer of this.racers) {
-                    let idx = this.racers.indexOf(racer);
+                let racers = Sorter.sort(this.racers, [this.scoreboardSorter]);
+
+                for(let racer of racers) {
+                    let idx = racers.indexOf(racer);
 
                     setTimeout(() => {
                         this.scores.push(racer);
@@ -97,14 +118,9 @@
                 }, (this.racers.length+1) * stagger)
             },
 
-            kickstart() {
-                setTimeout(() => {
-                    this.dotsVisible = true;
-
-                    setTimeout(() => {
-                        this.start();
-                    }, 1000)
-                }, 50);
+            setGender(g) {
+                this.clear();
+                this.gender = g;
             }
         },
 
@@ -121,7 +137,9 @@
         async mounted() {
             this.racerPool = await RacerParser.load();
 
-            this.kickstart();
+            setTimeout(() => {
+                this.dotsVisible = true;
+            }, 50);
         }
     }
 </script>
@@ -155,5 +173,13 @@
     .score-enter, .score-leave-to {
         opacity: 0;
         transform: translateY(30px);
+    }
+
+
+    #app .controls {
+        position: absolute;
+        left: 20px;
+        top: 15px;
+        text-align: left;
     }
 </style>
