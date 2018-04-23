@@ -1,11 +1,17 @@
 <template>
     <div id="app">
         <div class="dots">
-            <racer-dot v-for="r in racers" :key="r.GetUId()" :color="getColor(r)" :racer="r" :secondsElapsed="secondsElapsed"></racer-dot>
+            <racer-dot v-for="r in racers" :key="r.GetUId()"
+                       :hidden="!dotsVisible"
+                       :color="getColor(r)"
+                       :racer="r"
+                       :secondsElapsed="secondsElapsed"></racer-dot>
         </div>
 
         <div class="score-board">
-            <racer-score v-for="r in racers" :key="r.GetUId()" :color="getColor(r)" :racer="r" :secondsElapsed="secondsElapsed"></racer-score>
+            <transition-group name="score" tag="div">
+                <racer-score v-for="r in scores" :key="r.GetUId()" :color="getColor(r)" :racer="r" :secondsElapsed="secondsElapsed"></racer-score>
+            </transition-group>
         </div>
     </div>
 </template>
@@ -26,15 +32,33 @@
     ];
 
     let racers = [
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: 9.2}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: 10.2}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: 12.2}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: 9.2}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: 10.2}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: 12.2}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: 9.2}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: 10.2}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: 12.2}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
+        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
     ];
 
     export default {
@@ -46,8 +70,10 @@
 
         data: () => ({
             racers: racers,
+            scores: [],
             secondsElapsed: 0,
-            interval: null
+            interval: null,
+            dotsVisible: false
         }),
 
         methods: {
@@ -63,10 +89,13 @@
             },
 
             start() {
+                this.secondsElapsed = 0;
+
                 this.interval = setInterval(() => {
                     this.intervalFn();
                 }, 100);
             },
+
             stop() {
                 clearInterval(this.interval);
             },
@@ -77,6 +106,20 @@
                 if (this.secondsElapsed >= this.maxTime) {
                     this.stop();
                 }
+            },
+
+            addRacers(to, after, stagger = 50) {
+                for(let racer of this.racers) {
+                    let idx = this.racers.indexOf(racer);
+
+                    setTimeout(() => {
+                        to.push(racer);
+                    }, idx * stagger)
+                }
+
+                setTimeout(() => {
+                    if (after) after();
+                }, (this.racers.length+1) * stagger)
             }
         },
 
@@ -84,11 +127,17 @@
             maxTime() {
                 return Math.max(...this.racers.map(x => x.time));
             },
-
         },
 
         mounted() {
-            this.start();
+            setTimeout(() => {
+                this.dotsVisible = true;
+
+                setTimeout(() => {
+                    this.start();
+                    this.addRacers(this.scores);
+                }, 1000)
+            }, 50)
         }
     }
 </script>
@@ -113,5 +162,13 @@
         position: absolute;
         left: 0;
         right: 0;
+    }
+
+    .score-enter-active, .score-leave-active {
+        transition: all 1s;
+    }
+    .score-enter, .score-leave-to {
+        opacity: 0;
+        transform: translateY(30px);
     }
 </style>

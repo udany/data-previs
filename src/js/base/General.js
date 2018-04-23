@@ -91,6 +91,10 @@ Number.prototype.pad = function (size, decimalSize, decimalChar) {
 
     return result;
 };
+Number.prototype.trimPrecision = function (precision) {
+    let pow = Math.pow(10, precision);
+    return Math.round(this * pow) / pow;
+};
 
 
 

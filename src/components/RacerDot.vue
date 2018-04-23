@@ -1,5 +1,5 @@
 <template>
-    <div class="racer-dot">
+    <div class="racer-dot" :class="{hidden}">
         <div class="racer-label">{{racer.year}}</div>
         <div class="trail" :style="{height: trailHeight}"></div>
         <div class="dot" :style="{background: color, transform}"></div>
@@ -13,6 +13,7 @@
     export default {
         name: 'RacerDot',
         props: {
+            hidden: Boolean,
             color: [Color, String],
             racer: Racer,
             secondsElapsed: [Number],
@@ -29,7 +30,7 @@
                 return `translateY(${this.distance}px)`;
             },
             trailHeight() {
-                return `${this.distance+5}px`;
+                return `${this.distance + 5}px`;
             }
         }
     }
@@ -43,7 +44,15 @@
         margin-right: 10px;
         text-align: center;
 
+        opacity: 1;
+
         position: relative;
+
+        transition: all .8s;
+    }
+
+    .racer-dot.hidden {
+        opacity: 0;
     }
 
     .racer-dot .dot {
@@ -59,6 +68,9 @@
         transition: all .1s linear;
 
         transform: translateY(0px);
+    }
+    .racer-dot.hidden .dot {
+        transform: translateY(-10px) !important;
     }
 
     .racer-dot .trail {
@@ -83,6 +95,9 @@
         opacity: .2;
 
         transition: all .5s;
+    }
+    .racer-dot.hidden .racer-label {
+        transform: translate(5px, -8px) rotate(-55deg);
     }
 
     .racer-dot:hover .racer-label {

@@ -4,7 +4,7 @@
         <span class="name">{{racer.name}}</span>
         <span class="flag"> AB </span>
         <span class="country">{{racer.countryCode}}</span>
-        <span class="time">{{racer.time}}s</span>
+        <span class="time">{{racer.time.trimPrecision(2).pad(0, 2, ',')}}s</span>
     </div>
 </template>
 
@@ -16,7 +16,7 @@
         name: 'RacerScore',
         props: {
             color: [Color, String],
-            racer: Racer,
+            racer: Racer
         },
     }
 </script>
@@ -25,7 +25,7 @@
     .score-item {
         display: block;
         width: 500px;
-        margin: .5em auto;
+        margin: .2em auto;
     }
 
     .score-item .year,
@@ -33,10 +33,10 @@
     .score-item .flag,
     .score-item .country,
     .score-item .time {
-        padding: .4em .4em .4em .6em;
+        padding: .2em .4em .2em .6em;
         display: inline-block;
         text-align: left;
-        background: rgba(255, 255, 255, 0.4);
+        background: rgba(255, 255, 255, 0.8);
     }
 
     .score-item .year {
@@ -66,7 +66,7 @@
     }
 
     .score-item .time {
-        padding: .4em .6em .4em .6em;
+        padding-right: .6em;
 
         width: 10%;
         text-align: right;
