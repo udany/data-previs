@@ -21,6 +21,7 @@
     import RacerScore from './components/RacerScore.vue'
     import {Color} from "./js/entities/Color";
     import {Racer} from "./js/entities/Racer";
+    import {RacerParser} from "./js/RacerParser";
 
     let colors = [
         new Color([0, 0, 255, 1]),
@@ -31,36 +32,6 @@
         new Color([255, 0, 0, 1]),
     ];
 
-    let racers = [
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test1", year: 1998, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test2", year: 2012, countryCode: "USA", time: Math.random()*5 + 8}),
-        new Racer({name: "Test3", year: 2014, countryCode: "USA", time: Math.random()*5 + 8}),
-    ];
-
     export default {
         name: 'app',
         components: {
@@ -69,7 +40,7 @@
         },
 
         data: () => ({
-            racers: racers,
+            racers: [],
             scores: [],
             secondsElapsed: 0,
             interval: null,
@@ -129,7 +100,10 @@
             },
         },
 
-        mounted() {
+        async mounted() {
+            this.racers = await RacerParser.load();
+
+
             setTimeout(() => {
                 this.dotsVisible = true;
 
